@@ -1,4 +1,4 @@
-"""afisha URL Configuration
+"""Afisha URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -15,15 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from movie_app import views
-
+from movie_app.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/directors/', views.director_view),
-    path('api/v1/directors/<int:id>', views.one_director_view),
-    path('api/v1/movies/', views.movie_view),
-    path('api/v1/moview/<int:id>', views.one_movie_view),
-    path('api/v1/review/', views.review_view),
-    path('api/v1/review/<int:id>', views.one_review_view),
+
+    path('api/v1/directors/', directors_view),
+    path('api/v1/directors/<int:id>', one_director_view),
+
+    path('api/v1/movies/', movies_view),
+    path('api/v1/movies/<int:id>', one_movie_view),
+
+    path('api/v1/reviews/', reviews_view),
+    path('api/v1/reviews/<int:id>', one_review_view),
+
+    path('api/v1/movies/reviews', movies_reviews_view),
+    path('api/v1/movies/<int:id>/reviews', one_movie_review_view),
 ]
