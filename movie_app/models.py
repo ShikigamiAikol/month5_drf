@@ -1,55 +1,31 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-# Create your models here.
 
 
 class Director(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=100, verbose_name='Название фильма:')
-    description = models.TextField(null=True, blank=True, verbose_name='Описание фильма:')
-    duration = models.IntegerField(default=30)
-    director = models.ForeignKey(to=Director, verbose_name='Режиссер:',
-                                 related_name='movies', on_delete=models.CASCADE,
-                                 null=True, blank=True)
-
-    @property
-    def director_name(self):
-        try:
-            return self.director.name
-        except:
-            return 'OSHIBKA'
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    duration = models.IntegerField(blank=True, null=True)
+    director = models.ForeignKey(Director, on_delete=models.CASCADE, related_name='movies')
 
     def __str__(self):
-        return f"{self.title}"
+        return self.title
+
+    @property
+    def reviews_string(self):
+        return [review.text for review in self.revies.all()]
 
 
 class Review(models.Model):
-    rate = (
-        (1, '1'),
-        (2, '2'),
-        (3, '3'),
-        (4, '4'),
-        (5, '5')
-    )
-    text = models.TextField("Ваш отзыв")
-    movie = models.ForeignKey(to=Movie, verbose_name='Отзыв к фильму',
-                              related_name='reviews', on_delete=models.CASCADE,
-                              null=True, blank=True)
-    stars = models.IntegerField(default=1, choices=rate)
-
-    @property
-    def movie_name(self):
-        try:
-            return self.movie.title
-        except:
-            return 'OSHIBKA'
-
+    text = models.TextField()
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
+    stars = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True, blank=True)
 
     def __str__(self):
-        return f"{self.movie}-{self.stars}"
+        return f'{self.movie} - {self.text}'
